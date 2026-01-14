@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        // Flash sales
         Schema::create('flash_sales', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -28,7 +27,6 @@ return new class extends Migration {
             $table->unique(['flash_sale_id', 'comic_id']);
         });
 
-        // Bundles (combo / full set)
         Schema::create('bundles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
