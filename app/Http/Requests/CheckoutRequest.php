@@ -17,12 +17,12 @@ class CheckoutRequest extends FormRequest
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_phone' => ['required', 'string', 'regex:/^\+?[0-9\-\s()]{9,}$/'],
             'shipping_address_line' => ['required', 'string', 'max:500'],
-            'city' => ['required', 'string', 'max:100'],
-            'province' => ['required', 'string', 'max:100'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
-            'payment_method' => ['required', 'in:cod,momo,vnpay'],
-            'notes' => ['nullable', 'string', 'max:1000'],
-            'voucher_code' => ['nullable', 'string', 'max:50'],
+            'shipping_ward' => ['nullable', 'string', 'max:100'],
+            'shipping_province' => ['nullable', 'string', 'max:100'],
+            'shipping_postal_code' => ['nullable', 'string', 'max:20'],
+            'payment_method' => ['required', 'in:cod,bank_transfer,momo,vnpay'],
+            'customer_note' => ['nullable', 'string', 'max:1000'],
+            'voucher_id' => ['nullable', 'integer', 'exists:vouchers,id'],
         ];
     }
 

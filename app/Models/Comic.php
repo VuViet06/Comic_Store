@@ -13,6 +13,7 @@ class Comic extends Model
         'title',
         'slug',
         'description',
+        'author',
         'published_year',
         'edition_type',
         'condition',
