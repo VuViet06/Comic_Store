@@ -9,26 +9,27 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Danh sách danh mục
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        $categories = Category::withCount('comics')->orderBy('name')->get();
+        $query = Category::withCount('comics');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+            ;
+        }
+
+        $categories = $query->orderBy('name')->get();
         return view('admin.categories.index', compact('categories'));
     }
 
-    /**
-     * Form tạo mới
-     */
+
     public function create()
     {
         return view('admin.categories.create');
     }
 
-    /**
-     * Lưu danh mục mới
-     */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -43,18 +44,14 @@ class CategoryController extends Controller
             ->with('success', 'Đã tạo danh mục thành công.');
     }
 
-    /**
-     * Form chỉnh sửa
-     */
+
     public function edit($id)
     {
         $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
 
-    /**
-     * Cập nhật danh mục
-     */
+
     public function update(Request $request, $id)
     {
         $category = Category::findOrFail($id);
@@ -71,9 +68,7 @@ class CategoryController extends Controller
             ->with('success', 'Đã cập nhật danh mục thành công.');
     }
 
-    /**
-     * Xóa danh mục
-     */
+   
     public function destroy($id)
     {
         $category = Category::findOrFail($id);

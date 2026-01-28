@@ -9,19 +9,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Danh sách người dùng
-     */
+
     public function index(Request $request)
     {
         $query = User::withCount('orders');
 
-        // Filter by role
         if ($request->filled('role')) {
             $query->where('role', $request->role);
         }
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -30,7 +26,6 @@ class UserController extends Controller
             });
         }
 
-        // Sort
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'name':
@@ -50,18 +45,13 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    /**
-     * Form chỉnh sửa người dùng
-     */
-    public function edit($id)
+        public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Cập nhật người dùng
-     */
+
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -74,7 +64,6 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        // Update password if provided
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
@@ -87,20 +76,16 @@ class UserController extends Controller
             ->with('success', 'Đã cập nhật thông tin người dùng thành công.');
     }
 
-    /**
-     * Xóa người dùng
-     */
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);
 
-        // Prevent deleting yourself
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'Bạn không thể xóa chính mình.');
         }
 
-        // Check if user has orders
         if ($user->orders()->exists()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'Không thể xóa người dùng đã có đơn hàng.');

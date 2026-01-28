@@ -14,12 +14,8 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    /**
-     * Hiển thị dashboard với thống kê
-     */
-    public function index()
+        public function index()
     {
-        // Thống kê đơn hàng
         $orderStats = [
             'total' => Order::count(),
             'pending' => Order::where('order_status', Order::STATUS_PENDING)->count(),

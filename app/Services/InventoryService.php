@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InventoryService
 {
-    /**
-     * Giảm tồn kho (khi bán)
-     */
+
     public function reduceStock($comicId, $quantity, $orderId = null, $userId = null)
     {
         return DB::transaction(function () use ($comicId, $quantity, $orderId, $userId) {
@@ -37,9 +35,7 @@ class InventoryService
         });
     }
 
-    /**
-     * Hoàn trả tồn kho (khi hủy đơn, hoàn trả)
-     */
+
     public function restoreStock($comicId, $quantity, $orderId = null, $userId = null)
     {
         return DB::transaction(function () use ($comicId, $quantity, $orderId, $userId) {
@@ -60,14 +56,12 @@ class InventoryService
         });
     }
 
-    /**
-     * Nhập thêm hàng
-     */
+
     public function addStock($comicId, $quantity, $userId = null, $notes = null)
     {
         return DB::transaction(function () use ($comicId, $quantity, $userId, $notes) {
             $comic = Comic::lockForUpdate()->findOrFail($comicId);
-            $comic->stock += $quantity;
+            $comic->stock;
             $comic->save();
 
             InventoryTransaction::create([
@@ -82,14 +76,12 @@ class InventoryService
         });
     }
 
-    /**
-     * Điều chỉnh tồn kho (tăng/giảm tùy ý)
-     */
+
     public function adjustStock($comicId, $quantityChange, $userId = null, $reason = null)
     {
         return DB::transaction(function () use ($comicId, $quantityChange, $userId, $reason) {
             $comic = Comic::lockForUpdate()->findOrFail($comicId);
-            
+
             if ($quantityChange < 0 && $comic->stock < abs($quantityChange)) {
                 throw new \Exception("Không thể giảm quá tồn kho hiện tại.");
             }
@@ -109,9 +101,7 @@ class InventoryService
         });
     }
 
-    /**
-     * Lấy lịch sử giao dịch tồn kho
-     */
+
     public function getHistory($comicId, $limit = 50)
     {
         return InventoryTransaction::where('comic_id', $comicId)
@@ -121,18 +111,14 @@ class InventoryService
             ->get();
     }
 
-    /**
-     * Kiểm tra có đủ hàng không
-     */
+
     public function hasStock($comicId, $quantity)
     {
         $comic = Comic::find($comicId);
         return $comic && $comic->stock >= $quantity;
     }
 
-    /**
-     * Lấy số lượng tồn kho hiện tại
-     */
+
     public function getAvailableStock($comicId)
     {
         $comic = Comic::find($comicId);

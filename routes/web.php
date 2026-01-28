@@ -8,10 +8,10 @@ use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Trang chủ - Danh sách truyện
+// Trang chủ
 Route::get('/', [ComicController::class, 'index'])->name('home');
 
-// Chi tiết truyện & API
+// Chi tiết truyện
 Route::get('/comics/{slug}', [ComicController::class, 'show'])->name('comics.show');
 Route::get('/api/comics/search', [ComicController::class, 'search'])->name('comics.search');
 Route::get('/api/categories', [ComicController::class, 'getCategories'])->name('categories.index');
@@ -61,37 +61,40 @@ Route::get('/dashboard', function () {
     }
 
     if ($user->role === \App\Models\User::ROLE_ADMIN) {
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admindashboard');
     }
 
     return redirect()->route('user.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Admin Panel
+// Admin
+Route::get('/admin', [\App\Http\Controllers\Auth\AdminLoginController::class, 'create'])->name('admin.login');
+Route::post('/admin', [\App\Http\Controllers\Auth\AdminLoginController::class, 'store']);
+Route::post('/admin/logout', [\App\Http\Controllers\Auth\AdminLoginController::class, 'destroy'])->name('admin.logout');
+Route::get('/admindashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'admin'])
+    ->name('admindashboard');
+
+
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-    
-    // Comics Management
+    Route::get('/dashboard', function () {
+        return redirect()->route('admindashboard');
+    })->name('dashboard');
+
     Route::resource('comics', \App\Http\Controllers\Admin\ComicController::class);
-    
-    // Orders Management
+
     Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{code}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{code}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::post('/orders/{code}/cancel', [\App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('/orders/{code}/return', [\App\Http\Controllers\Admin\OrderController::class, 'processReturn'])->name('orders.return');
-    
-    // Categories Management
+
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    
-    // Publishers Management
+
     Route::resource('publishers', \App\Http\Controllers\Admin\PublisherController::class);
-    
-    // Vouchers Management
+
     Route::resource('vouchers', \App\Http\Controllers\Admin\VoucherController::class);
-    
-    // Inventory Management
+
     Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory.index');
     Route::get('/inventory/history', [\App\Http\Controllers\Admin\InventoryController::class, 'history'])->name('inventory.history');
     Route::get('/inventory/{id}/import', [\App\Http\Controllers\Admin\InventoryController::class, 'importForm'])->name('inventory.import-form');
@@ -99,14 +102,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('/inventory/{id}/adjust', [\App\Http\Controllers\Admin\InventoryController::class, 'adjustForm'])->name('inventory.adjust-form');
     Route::post('/inventory/{id}/adjust', [\App\Http\Controllers\Admin\InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::get('/inventory/{id}/history', [\App\Http\Controllers\Admin\InventoryController::class, 'history'])->name('inventory.comic-history');
-    
-    // Users Management
+
     Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
     Route::get('/users/{id}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
-    
-    // Shipping Management
+
     Route::get('/shipping', [\App\Http\Controllers\Admin\ShippingController::class, 'index'])->name('shipping.index');
     Route::get('/shipping/create', [\App\Http\Controllers\Admin\ShippingController::class, 'create'])->name('shipping.create');
     Route::post('/shipping', [\App\Http\Controllers\Admin\ShippingController::class, 'store'])->name('shipping.store');
@@ -126,8 +127,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // User Addresses (trong Profile)
     Route::prefix('profile/addresses')->name('addresses.')->group(function () {
         Route::get('/create', [\App\Http\Controllers\UserAddressController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\UserAddressController::class, 'store'])->name('store');

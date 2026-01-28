@@ -15,9 +15,7 @@ class OrderService
         $this->inventoryService = $inventoryService;
     }
 
-    /**
-     * Lấy danh sách đơn hàng của user
-     */
+
     public function getUserOrders($userId, $status = null, $limit = 15, $offset = 0)
     {
         $query = Order::where('user_id', $userId)
@@ -34,9 +32,7 @@ class OrderService
         ];
     }
 
-    /**
-     * Lấy đơn hàng theo mã
-     */
+
     public function getOrderByCode($code)
     {
         return Order::with(['items.comic', 'vouchers', 'user'])
@@ -44,15 +40,12 @@ class OrderService
             ->first();
     }
 
-    /**
-     * Lấy chi tiết đơn hàng (có kiểm tra quyền)
-     */
+
     public function getOrderDetail($orderId, $userId = null)
     {
         $query = Order::with(['items.comic', 'vouchers', 'user'])
             ->findOrFail($orderId);
 
-        // Kiểm tra quyền nếu có userId
         if ($userId && $query->user_id != $userId) {
             throw new \Exception("Bạn không có quyền xem đơn hàng này.");
         }
@@ -60,9 +53,7 @@ class OrderService
         return $query;
     }
 
-    /**
-     * Hủy đơn hàng (chỉ khi pending)
-     */
+
     public function cancelOrder($orderId, $userId = null)
     {
         return DB::transaction(function () use ($orderId, $userId) {
@@ -115,7 +106,7 @@ class OrderService
 
         // Cập nhật trạng thái (admin sẽ xử lý sau)
         $order->order_status = Order::STATUS_RETURNED;
-        $order->customer_note = ($order->customer_note ? $order->customer_note . "\n" : '') . 
+        $order->customer_note = ($order->customer_note ? $order->customer_note . "\n" : '') .
             "Yêu cầu hoàn trả: " . ($reason ?? 'Không có lý do');
         $order->save();
 

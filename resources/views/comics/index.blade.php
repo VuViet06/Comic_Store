@@ -194,7 +194,7 @@
                                 {{-- Image --}}
                                 <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative">
                                     @if($comic->cover)
-                                        <img src="{{ $comic->cover }}" alt="{{ $comic->title }}" 
+                                        <img src="{{ $comic->cover_url }}" alt="{{ $comic->title }}" 
                                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-300">

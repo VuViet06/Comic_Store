@@ -27,7 +27,6 @@ class ComicController extends Controller
     {
         $query = Comic::with(['category', 'publisher']);
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -36,7 +35,6 @@ class ComicController extends Controller
             });
         }
 
-        // Filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
@@ -59,7 +57,6 @@ class ComicController extends Controller
             }
         }
 
-        // Sort
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'title':
@@ -87,9 +84,6 @@ class ComicController extends Controller
         return view('admin.comics.index', compact('comics', 'categories', 'publishers'));
     }
 
-    /**
-     * Form tạo mới
-     */
     public function create()
     {
         $categories = Category::all();
@@ -97,9 +91,6 @@ class ComicController extends Controller
         return view('admin.comics.create', compact('categories', 'publishers'));
     }
 
-    /**
-     * Lưu truyện mới
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -118,19 +109,23 @@ class ComicController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Generate slug
         $validated['slug'] = Str::slug($validated['title']);
-        
-        // Handle image upload
+
+        //image upload
         if ($request->hasFile('cover')) {
-            $validated['cover'] = $request->file('cover')->store('comics', 'public');
+            $file = $request->file('cover');
+            $imageData = base64_encode(file_get_contents($file->getRealPath()));
+            $mimeType = $file->getMimeType();
+            $validated['cover'] = 'data:' . $mimeType . ';base64,' . $imageData;
         }
 
         $validated['is_active'] = $request->has('is_active');
 
+
+        // dd($request->all());
+
         $comic = Comic::create($validated);
 
-        // Log inventory transaction nếu có stock
         if ($comic->stock > 0) {
             $this->inventoryService->addStock($comic->id, $comic->stock, auth()->id(), 'Nhập hàng ban đầu');
         }
@@ -139,22 +134,18 @@ class ComicController extends Controller
             ->with('success', 'Đã tạo truyện thành công.');
     }
 
-    /**
-     * Chi tiết truyện
-     */
+
     public function show($id)
     {
         $comic = Comic::with(['category', 'publisher', 'inventoryTransactions.user'])
             ->findOrFail($id);
-        
+
         $inventoryHistory = $this->inventoryService->getHistory($id, 20);
 
         return view('admin.comics.show', compact('comic', 'inventoryHistory'));
     }
 
-    /**
-     * Form chỉnh sửa
-     */
+
     public function edit($id)
     {
         $comic = Comic::findOrFail($id);
@@ -163,9 +154,7 @@ class ComicController extends Controller
         return view('admin.comics.edit', compact('comic', 'categories', 'publishers'));
     }
 
-    /**
-     * Cập nhật truyện
-     */
+
     public function update(Request $request, $id)
     {
         $comic = Comic::findOrFail($id);
@@ -186,23 +175,20 @@ class ComicController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Update slug if title changed
         if ($comic->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);
         }
-
-        // Handle image upload
+        //  image upload Base64
         if ($request->hasFile('cover')) {
-            // Delete old image
-            if ($comic->cover) {
-                Storage::disk('public')->delete($comic->cover);
-            }
-            $validated['cover'] = $request->file('cover')->store('comics', 'public');
+            $file = $request->file('cover');
+            $imageData = base64_encode(file_get_contents($file->getRealPath()));
+            $mimeType = $file->getMimeType();
+            $validated['cover'] = 'data:' . $mimeType . ';base64,' . $imageData;
         }
 
         $validated['is_active'] = $request->has('is_active');
 
-        // Handle stock change
+
         $oldStock = $comic->stock;
         $newStock = $validated['stock'];
         if ($oldStock != $newStock) {
@@ -227,16 +213,11 @@ class ComicController extends Controller
     {
         $comic = Comic::findOrFail($id);
 
-        // Check if comic has orders
         if ($comic->orderItems()->exists()) {
             return redirect()->route('admin.comics.index')
                 ->with('error', 'Không thể xóa truyện đã có đơn hàng. Vui lòng vô hiệu hóa thay vì xóa.');
         }
 
-        // Delete image
-        if ($comic->cover) {
-            Storage::disk('public')->delete($comic->cover);
-        }
 
         $comic->delete();
 

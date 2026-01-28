@@ -17,14 +17,10 @@ class InventoryController extends Controller
         $this->inventoryService = $inventoryService;
     }
 
-    /**
-     * Danh sách tồn kho
-     */
     public function index(Request $request)
     {
         $query = Comic::with(['category', 'publisher']);
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -32,7 +28,6 @@ class InventoryController extends Controller
             });
         }
 
-        // Filter by stock status
         if ($request->filled('stock_status')) {
             if ($request->stock_status === 'out_of_stock') {
                 $query->where('stock', 0);
@@ -43,7 +38,6 @@ class InventoryController extends Controller
             }
         }
 
-        // Sort
         $sort = $request->get('sort', 'stock_asc');
         switch ($sort) {
             case 'stock_desc':
@@ -63,18 +57,14 @@ class InventoryController extends Controller
         return view('admin.inventory.index', compact('comics'));
     }
 
-    /**
-     * Form nhập hàng
-     */
+
     public function importForm($id)
     {
         $comic = Comic::findOrFail($id);
-        return view('admin.inventory.import', compact('comic'));
+        return view('admin.inventory.import-form', compact('comic'));
     }
 
-    /**
-     * Xử lý nhập hàng
-     */
+
     public function import(Request $request, $id)
     {
         $request->validate([
@@ -101,18 +91,14 @@ class InventoryController extends Controller
         }
     }
 
-    /**
-     * Form điều chỉnh tồn kho
-     */
+
     public function adjustForm($id)
     {
         $comic = Comic::findOrFail($id);
-        return view('admin.inventory.adjust', compact('comic'));
+        return view('admin.inventory.adjust-form', compact('comic'));
     }
 
-    /**
-     * Xử lý điều chỉnh tồn kho
-     */
+
     public function adjust(Request $request, $id)
     {
         $request->validate([
@@ -140,9 +126,7 @@ class InventoryController extends Controller
         }
     }
 
-    /**
-     * Lịch sử giao dịch tồn kho
-     */
+
     public function history(Request $request, $id = null)
     {
         $query = InventoryTransaction::with(['comic', 'user', 'order']);
@@ -151,12 +135,10 @@ class InventoryController extends Controller
             $query->where('comic_id', $id);
         }
 
-        // Filter by type
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
-        // Date range
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }

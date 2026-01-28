@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
+@section('page-title', 'Trang chủ quản trị')
 
 @section('content')
 <div class="space-y-6">
-    {{-- Thống kê tổng quan --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {{-- Đơn hàng --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -26,7 +24,6 @@
             </div>
         </div>
 
-        {{-- Doanh thu --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -44,7 +41,6 @@
             </div>
         </div>
 
-        {{-- Sản phẩm --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -63,7 +59,6 @@
             </div>
         </div>
 
-        {{-- Người dùng --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -82,9 +77,7 @@
         </div>
     </div>
 
-    {{-- Chi tiết thống kê --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Trạng thái đơn hàng --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <h3 class="text-lg font-bold mb-4">Trạng thái đơn hàng</h3>
             <div class="space-y-3">
@@ -107,7 +100,6 @@
             </div>
         </div>
 
-        {{-- Doanh thu --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <h3 class="text-lg font-bold mb-4">Doanh thu</h3>
             <div class="space-y-3">
@@ -127,9 +119,7 @@
         </div>
     </div>
 
-    {{-- Đơn hàng gần đây và Sản phẩm bán chạy --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Đơn hàng gần đây --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold">Đơn hàng gần đây</h3>
@@ -171,7 +161,6 @@
             </div>
         </div>
 
-        {{-- Sản phẩm bán chạy --}}
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold">Sản phẩm bán chạy</h3>

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use HasFactory;
     /**
      * Các trạng thái đơn hàng
      */
@@ -105,13 +107,24 @@ class Order extends Model
         ];
     }
 
+    public static function getPaymentStatuses(): array
+    {
+        return [
+            self::PAYMENT_STATUS_UNPAID => 'Chưa thanh toán',
+            self::PAYMENT_STATUS_PENDING => 'Đang xử lý',
+            self::PAYMENT_STATUS_PAID => 'Đã thanh toán',
+            self::PAYMENT_STATUS_FAILED => 'Thất bại',
+            self::PAYMENT_STATUS_REFUNDED => 'Đã hoàn tiền',
+        ];
+    }
+
 
     public function scopeStatus($query, string $status)
     {
         return $query->where('order_status', $status);
     }
 
-   
+
     public function canBeCancelled(): bool
     {
         return in_array($this->order_status, [self::STATUS_PENDING]);
