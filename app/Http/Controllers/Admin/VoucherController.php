@@ -10,19 +10,15 @@ use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {
-    /**
-     * Danh sách voucher
-     */
+
     public function index(Request $request)
     {
         $query = Voucher::query();
 
-        // Filter
         if ($request->filled('is_active')) {
             $query->where('is_active', $request->is_active);
         }
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -35,17 +31,12 @@ class VoucherController extends Controller
         return view('admin.vouchers.index', compact('vouchers'));
     }
 
-    /**
-     * Form tạo mới
-     */
     public function create()
     {
         return view('admin.vouchers.create');
     }
 
-    /**
-     * Lưu voucher mới
-     */
+
     public function store(StoreVoucherRequest $request)
     {
         $validated = $request->validated();
@@ -58,18 +49,14 @@ class VoucherController extends Controller
             ->with('success', 'Đã tạo mã giảm giá thành công.');
     }
 
-    /**
-     * Form chỉnh sửa
-     */
+
     public function edit($id)
     {
         $voucher = Voucher::findOrFail($id);
         return view('admin.vouchers.edit', compact('voucher'));
     }
 
-    /**
-     * Cập nhật voucher
-     */
+
     public function update(UpdateVoucherRequest $request, $id)
     {
         $voucher = Voucher::findOrFail($id);
@@ -82,9 +69,7 @@ class VoucherController extends Controller
             ->with('success', 'Đã cập nhật mã giảm giá thành công.');
     }
 
-    /**
-     * Xóa voucher
-     */
+    
     public function destroy($id)
     {
         $voucher = Voucher::findOrFail($id);

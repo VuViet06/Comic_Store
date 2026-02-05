@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Http\Requests\Admin\CreateUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -46,12 +47,27 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-        public function edit($id)
+    public function create()
+    {
+        return view('admin.users.create');
+    }
+
+    public function store(CreateUserRequest $request)
+    {
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Đã thêm người dùng mới thành công.');
+    }
+
+    public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
-
 
     public function update(UpdateUserRequest $request, $id)
     {

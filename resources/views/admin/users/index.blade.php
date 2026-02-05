@@ -5,6 +5,43 @@
 
 @section('content')
 <div class="space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                <a href="{{ route('admin.users.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Thêm người dùng
+                </a>
+            </div>
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form method="GET" action="{{ route('admin.users.index') }}" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Tìm kiếm ....."
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <input type="date" name="date_from" value="{{ request('date_from') }}" placeholder="Từ ngày"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <input type="date" name="date_to" value="{{ request('date_to') }}" placeholder="Đến ngày"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        Lọc
+                    </button>
+                    <a href="{{ route('admin.users.index') }}" class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-center">
+                        Reset
+                    </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -61,7 +98,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         @if($users->hasPages())
             <div class="px-6 py-4 border-t">
                 {{ $users->links() }}

@@ -5,7 +5,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Filters -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 md:grid-cols-6 gap-4">
             <div>
@@ -129,7 +128,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         @if($orders->hasPages())
             <div class="px-6 py-4 border-t">
                 {{ $orders->links() }}

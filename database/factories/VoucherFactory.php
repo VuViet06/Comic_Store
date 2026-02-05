@@ -17,7 +17,7 @@ class VoucherFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => fake()->unique()->bothify('VOUCHER-????-####'),
+            'code' => fake()->unique()->bothify('VOUCHER-?#?#??##'),
             'type' => fake()->randomElement(['percent', 'fixed']),
             'value' => fake()->numberBetween(5, 50),
             'max_discount' => fake()->numberBetween(50, 500),
