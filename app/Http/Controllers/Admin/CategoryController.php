@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Http\Requests\Admin\Category\StoreCategoryRequest;
+use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -30,12 +32,9 @@ class CategoryController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-        ]);
-
+        $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['name']);
 
         Category::create($validated);
@@ -52,14 +51,10 @@ class CategoryController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdateCategoryRequest $request, $id)
     {
         $category = Category::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $id,
-        ]);
-
+        $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['name']);
 
         $category->update($validated);

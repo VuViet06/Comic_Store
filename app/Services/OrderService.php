@@ -88,7 +88,7 @@ class OrderService
     }
 
     /**
-     * Yêu cầu hoàn trả (chỉ khi completed)
+     * Yêu cầu hoàn trả
      */
     public function requestReturn($orderId, $userId = null, $reason = null)
     {
@@ -104,7 +104,7 @@ class OrderService
             throw new \Exception("Chỉ có thể yêu cầu hoàn trả đơn hàng đã hoàn thành.");
         }
 
-        // Cập nhật trạng thái (admin sẽ xử lý sau)
+        // Cập nhật trạng thái
         $order->order_status = Order::STATUS_RETURNED;
         $order->customer_note = ($order->customer_note ? $order->customer_note . "\n" : '') .
             "Yêu cầu hoàn trả: " . ($reason ?? 'Không có lý do');
@@ -131,7 +131,7 @@ class OrderService
     }
 
     /**
-     * Tra cứu đơn hàng (cho guest) - cần mã đơn + số điện thoại
+     * Tra cứu đơn hàng (cho guest)
      */
     public function trackOrder($code, $phone)
     {
@@ -148,7 +148,7 @@ class OrderService
     }
 
     /**
-     * Lấy đơn hàng gần đây (cho dashboard)
+     * Lấy đơn hàng gần đây
      */
     public function getRecentOrders($limit = 10)
     {

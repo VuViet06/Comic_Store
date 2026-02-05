@@ -44,7 +44,6 @@ class CheckoutController extends Controller
         $cartSummary = $this->cartService->getSummary();
         $user = Auth::user();
 
-        // Prefill thông tin nếu user đã login
         $defaultData = [];
         if ($user) {
             $defaultData = [

@@ -15,7 +15,7 @@
                     🎉 Miễn phí ship đơn từ 500k
                 </span>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                    Khám phá thế giới 
+                    Khám phá thế giới
                     <span class="text-yellow-300 block">Truyện tranh</span>
                 </h1>
                 <p class="text-lg md:text-xl text-white/90 mb-8 max-w-xl mx-auto lg:mx-0">
@@ -68,7 +68,7 @@
                 Tất cả
             </a>
             @foreach($categories as $cat)
-                <a href="{{ route('home', ['category' => $cat->id]) }}" 
+                <a href="{{ route('home', ['category' => $cat->id]) }}"
                    class="px-5 py-2 rounded-full font-medium transition-all {{ request('category') == $cat->id ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-purple-100' }}">
                     {{ $cat->name }}
                 </a>
@@ -81,7 +81,7 @@
 <section id="catalog" class="bg-gray-50 py-10">
     <div class="container mx-auto px-4">
         <div class="flex flex-col lg:flex-row gap-8">
-            
+
             {{-- ========== SIDEBAR FILTER ========== --}}
             <aside class="w-full lg:w-72 flex-shrink-0">
                 <div class="bg-white rounded-2xl shadow-md p-6 sticky top-4">
@@ -91,13 +91,13 @@
                         </svg>
                         Bộ lọc
                     </h2>
-                    
+
                     <form method="GET" action="{{ route('home') }}" class="space-y-5">
                         {{-- Search --}}
                         <div>
                             <label for="search" class="form-label">Tìm kiếm</label>
                             <div class="relative">
-                                <input type="text" name="search" id="search" value="{{ request('search') }}" 
+                                <input type="text" name="search" id="search" value="{{ request('search') }}"
                                        placeholder="Nhập tên truyện..." class="form-input pl-10">
                                 <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -144,7 +144,7 @@
 
                         {{-- In Stock --}}
                         <div class="flex items-center bg-gray-50 p-3 rounded-lg">
-                            <input type="checkbox" name="in_stock" id="in_stock" value="1" 
+                            <input type="checkbox" name="in_stock" id="in_stock" value="1"
                                    {{ request('in_stock') ? 'checked' : '' }} class="rounded text-purple-600 focus:ring-purple-500">
                             <label for="in_stock" class="ml-2 text-sm text-gray-700">Chỉ hiện còn hàng</label>
                         </div>
@@ -186,15 +186,13 @@
                     </div>
                 </div>
 
-                {{-- Products Grid --}}
                 @if($comics->count() > 0)
                     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                         @foreach($comics as $comic)
                             <div class="bg-white rounded-2xl shadow-sm overflow-hidden group hover:shadow-xl transition-all duration-300">
-                                {{-- Image --}}
                                 <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative">
                                     @if($comic->cover)
-                                        <img src="{{ $comic->cover_url }}" alt="{{ $comic->title }}" 
+                                        <img src="{{ $comic->cover_url }}" alt="{{ $comic->title }}"
                                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
@@ -203,8 +201,7 @@
                                             </svg>
                                         </div>
                                     @endif
-                                    
-                                    {{-- Badges --}}
+
                                     <div class="absolute top-3 left-3 flex flex-col gap-2">
                                         @if($comic->stock <= 0)
                                             <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">Hết hàng</span>
@@ -216,15 +213,13 @@
                                         @endif
                                     </div>
 
-                                    {{-- Quick View Button --}}
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                         <a href="{{ route('comics.show', $comic->slug) }}" class="bg-white text-purple-600 px-6 py-3 rounded-xl font-bold hover:bg-purple-600 hover:text-white transition-colors">
                                             Xem chi tiết
                                         </a>
                                     </div>
                                 </div>
-                                
-                                {{-- Content --}}
+
                                 <div class="p-5">
                                     @if($comic->category)
                                         <span class="text-xs text-purple-600 font-medium">{{ $comic->category->name }}</span>
@@ -233,7 +228,7 @@
                                         {{ $comic->title }}
                                     </h3>
                                     <p class="text-sm text-gray-500 mb-3">{{ $comic->publisher->name ?? 'N/A' }}</p>
-                                    
+
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <span class="text-2xl font-bold text-red-500">{{ number_format($comic->price) }}</span>
@@ -248,12 +243,10 @@
                         @endforeach
                     </div>
 
-                    {{-- Pagination --}}
                     <div class="mt-10">
                         {{ $comics->links() }}
                     </div>
                 @else
-                    {{-- Empty State --}}
                     <div class="text-center py-16 bg-white rounded-2xl shadow-sm">
                         <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>

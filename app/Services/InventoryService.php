@@ -61,7 +61,7 @@ class InventoryService
     {
         return DB::transaction(function () use ($comicId, $quantity, $userId, $notes) {
             $comic = Comic::lockForUpdate()->findOrFail($comicId);
-            $comic->stock;
+            $comic->stock += $quantity;
             $comic->save();
 
             InventoryTransaction::create([

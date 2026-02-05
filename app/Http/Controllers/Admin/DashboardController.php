@@ -63,7 +63,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // Sản phẩm bán chạy (top 10)
+        // Sản phẩm bán chạy 
         $topProducts = DB::table('order_items')
             ->join('comics', 'order_items.comic_id', '=', 'comics.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')

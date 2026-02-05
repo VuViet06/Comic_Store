@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Comic;
 use App\Models\InventoryTransaction;
 use App\Services\InventoryService;
+use App\Http\Requests\Admin\Stock\ImportStockRequest;
+use App\Http\Requests\Admin\Stock\AdjustStockRequest;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -65,13 +67,8 @@ class InventoryController extends Controller
     }
 
 
-    public function import(Request $request, $id)
+    public function import(ImportStockRequest $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
         $comic = Comic::findOrFail($id);
 
         try {
@@ -99,13 +96,8 @@ class InventoryController extends Controller
     }
 
 
-    public function adjust(Request $request, $id)
+    public function adjust(AdjustStockRequest $request, $id)
     {
-        $request->validate([
-            'quantity_change' => 'required|integer',
-            'reason' => 'required|string|max:500',
-        ]);
-
         $comic = Comic::findOrFail($id);
 
         try {

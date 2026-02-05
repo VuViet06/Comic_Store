@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Voucher;
+use App\Http\Requests\Admin\Voucher\StoreVoucherRequest;
+use App\Http\Requests\Admin\Voucher\UpdateVoucherRequest;
 use Illuminate\Http\Request;
 
 class VoucherController extends Controller
@@ -44,20 +46,9 @@ class VoucherController extends Controller
     /**
      * Lưu voucher mới
      */
-    public function store(Request $request)
+    public function store(StoreVoucherRequest $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:50|unique:vouchers,code',
-            'type' => 'required|in:percent,fixed',
-            'value' => 'required|numeric|min:0',
-            'max_discount' => 'nullable|numeric|min:0|required_if:type,percent',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'usage_limit' => 'nullable|integer|min:1',
-            'starts_at' => 'nullable|date',
-            'ends_at' => 'nullable|date|after:starts_at',
-            'is_active' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $validated['is_active'] = $request->has('is_active');
         $validated['used_count'] = 0;
 
@@ -79,22 +70,10 @@ class VoucherController extends Controller
     /**
      * Cập nhật voucher
      */
-    public function update(Request $request, $id)
+    public function update(UpdateVoucherRequest $request, $id)
     {
         $voucher = Voucher::findOrFail($id);
-
-        $validated = $request->validate([
-            'code' => 'required|string|max:50|unique:vouchers,code,' . $id,
-            'type' => 'required|in:percent,fixed',
-            'value' => 'required|numeric|min:0',
-            'max_discount' => 'nullable|numeric|min:0|required_if:type,percent',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'usage_limit' => 'nullable|integer|min:1',
-            'starts_at' => 'nullable|date',
-            'ends_at' => 'nullable|date|after:starts_at',
-            'is_active' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $validated['is_active'] = $request->has('is_active');
 
         $voucher->update($validated);

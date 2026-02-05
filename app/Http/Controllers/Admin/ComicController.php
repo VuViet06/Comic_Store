@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Comic;
 use App\Models\Category;
 use App\Models\Publisher;
+use App\Models\InventoryTransaction;
 use App\Services\InventoryService;
+use App\Http\Requests\Admin\Comic\StoreComicRequest;
+use App\Http\Requests\Admin\Comic\UpdateComicRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -91,24 +94,9 @@ class ComicController extends Controller
         return view('admin.comics.create', compact('categories', 'publishers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreComicRequest $request)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'publisher_id' => 'required|exists:publishers,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'published_year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'edition_type' => 'required|string',
-            'condition' => 'required|string',
-            'series' => 'nullable|string|max:255',
-            'volume' => 'nullable|integer|min:1',
-            'price' => 'required|numeric|min:0',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'stock' => 'required|integer|min:0',
-            'is_active' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['title']);
 
         //image upload
@@ -127,7 +115,13 @@ class ComicController extends Controller
         $comic = Comic::create($validated);
 
         if ($comic->stock > 0) {
-            $this->inventoryService->addStock($comic->id, $comic->stock, auth()->id(), 'Nhập hàng ban đầu');
+            InventoryTransaction::create([
+                'comic_id' => $comic->id,
+                'type' => 'import',
+                'quantity_change' => $comic->stock,
+                'user_id' => auth()->id(),
+                'note' => 'Nhập hàng ban đầu',
+            ]);
         }
 
         return redirect()->route('admin.comics.index')
@@ -155,25 +149,10 @@ class ComicController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdateComicRequest $request, $id)
     {
         $comic = Comic::findOrFail($id);
-
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'publisher_id' => 'required|exists:publishers,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'published_year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'edition_type' => 'required|string',
-            'condition' => 'required|string',
-            'series' => 'nullable|string|max:255',
-            'volume' => 'nullable|integer|min:1',
-            'price' => 'required|numeric|min:0',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'stock' => 'required|integer|min:0',
-            'is_active' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
         if ($comic->title !== $validated['title']) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -191,6 +170,14 @@ class ComicController extends Controller
 
         $oldStock = $comic->stock;
         $newStock = $validated['stock'];
+
+        // Loại bỏ stock khỏi validated vì sẽ được xử lý riêng qua InventoryService
+        unset($validated['stock']);
+
+        // Cập nhật các thông tin khác trước
+        $comic->update($validated);
+
+        // Xử lý thay đổi stock riêng
         if ($oldStock != $newStock) {
             $stockDiff = $newStock - $oldStock;
             if ($stockDiff > 0) {
@@ -199,8 +186,6 @@ class ComicController extends Controller
                 $this->inventoryService->adjustStock($comic->id, $stockDiff, auth()->id(), 'Điều chỉnh tồn kho');
             }
         }
-
-        $comic->update($validated);
 
         return redirect()->route('admin.comics.index')
             ->with('success', 'Đã cập nhật truyện thành công.');

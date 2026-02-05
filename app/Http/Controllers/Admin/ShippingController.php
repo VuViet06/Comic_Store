@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ShippingPartner;
 use App\Models\Shipment;
+use App\Http\Requests\Admin\Shipping\StoreShippingPartnerRequest;
+use App\Http\Requests\Admin\Shipping\UpdateShippingPartnerRequest;
 use Illuminate\Http\Request;
 
 class ShippingController extends Controller
@@ -29,15 +31,9 @@ class ShippingController extends Controller
     /**
      * Lưu đối tác mới
      */
-    public function store(Request $request)
+    public function store(StoreShippingPartnerRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:shipping_partners,code',
-            'api_base_url' => 'nullable|url',
-            'is_active' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $validated['is_active'] = $request->has('is_active');
 
         ShippingPartner::create($validated);
@@ -58,17 +54,10 @@ class ShippingController extends Controller
     /**
      * Cập nhật đối tác
      */
-    public function update(Request $request, $id)
+    public function update(UpdateShippingPartnerRequest $request, $id)
     {
         $partner = ShippingPartner::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:shipping_partners,code,' . $id,
-            'api_base_url' => 'nullable|url',
-            'is_active' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $validated['is_active'] = $request->has('is_active');
 
         $partner->update($validated);

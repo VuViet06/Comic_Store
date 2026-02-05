@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Publisher;
+use App\Http\Requests\Admin\Publisher\StorePublisherRequest;
+use App\Http\Requests\Admin\Publisher\UpdatePublisherRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -30,13 +32,9 @@ class PublisherController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StorePublisherRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:publishers,name',
-            'country' => 'nullable|string|max:255',
-        ]);
-
+        $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['name']);
 
         Publisher::create($validated);
@@ -54,15 +52,10 @@ class PublisherController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdatePublisherRequest $request, $id)
     {
         $publisher = Publisher::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:publishers,name,' . $id,
-            'country' => 'nullable|string|max:255',
-        ]);
-
+        $validated = $request->validated();
         $validated['slug'] = Str::slug($validated['name']);
 
         $publisher->update($validated);

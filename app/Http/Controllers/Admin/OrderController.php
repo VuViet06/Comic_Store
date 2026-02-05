@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\OrderService;
 use App\Services\InventoryService;
+use App\Http\Requests\Admin\UpdateOrderStatusRequest;
+use App\Http\Requests\Admin\ProcessReturnRequest;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -28,17 +30,14 @@ class OrderController extends Controller
     {
         $query = Order::with(['user', 'items.comic']);
 
-        // Filter by status
         if ($request->filled('status')) {
             $query->where('order_status', $request->status);
         }
 
-        // Filter by payment status
         if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -48,7 +47,6 @@ class OrderController extends Controller
             });
         }
 
-        // Date range
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -57,7 +55,6 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        // Sort
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'oldest':
@@ -95,31 +92,15 @@ class OrderController extends Controller
     /**
      * Cập nhật trạng thái đơn hàng
      */
-    public function updateStatus(Request $request, $code)
+    public function updateStatus(UpdateOrderStatusRequest $request, $code)
     {
         $order = Order::where('code', $code)->firstOrFail();
-
-        $request->validate([
-            'order_status' => 'required|in:' . implode(',', [
-                Order::STATUS_PENDING,
-                Order::STATUS_SHIPPING,
-                Order::STATUS_COMPLETED,
-                Order::STATUS_CANCELLED,
-            ]),
-            'payment_status' => 'nullable|in:' . implode(',', [
-                Order::PAYMENT_STATUS_UNPAID,
-                Order::PAYMENT_STATUS_PENDING,
-                Order::PAYMENT_STATUS_PAID,
-                Order::PAYMENT_STATUS_FAILED,
-                Order::PAYMENT_STATUS_REFUNDED,
-            ]),
-        ]);
 
         $oldStatus = $order->order_status;
         $newStatus = $request->order_status;
 
         $order->order_status = $newStatus;
-        
+
         if ($request->filled('payment_status')) {
             $order->payment_status = $request->payment_status;
         }
@@ -173,7 +154,7 @@ class OrderController extends Controller
     /**
      * Xử lý hoàn trả
      */
-    public function processReturn(Request $request, $code)
+    public function processReturn(ProcessReturnRequest $request, $code)
     {
         $order = Order::where('code', $code)->firstOrFail();
 
@@ -181,10 +162,6 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.show', $code)
                 ->with('error', 'Chỉ có thể hoàn trả đơn hàng đã hoàn thành.');
         }
-
-        $request->validate([
-            'reason' => 'nullable|string|max:500',
-        ]);
 
         try {
             $this->orderService->requestReturn(

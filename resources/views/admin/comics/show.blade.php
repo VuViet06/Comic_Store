@@ -12,14 +12,7 @@
             </svg>
             Quay lại
         </a>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.comics.edit', $comic->id) }}" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
-                Sửa
-            </a>
-            <a href="{{ route('admin.inventory.import-form', $comic->id) }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                Nhập thêm hàng
-            </a>
-        </div>
+        
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -88,15 +81,15 @@
                                 @endif
                             </div>
                         </div>
+
+                        @if($comic->description)
+                            <div class="pt-4 border-t">
+                                <h4 class="font-medium text-gray-900 mb-2">Mô tả</h4>
+                                <p class="text-gray-600 text-sm">{{ $comic->description }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
-
-                @if($comic->description)
-                    <div class="mt-6 pt-6 border-t">
-                        <h4 class="font-medium text-gray-900 mb-2">Mô tả</h4>
-                        <p class="text-gray-600">{{ $comic->description }}</p>
-                    </div>
-                @endif
             </div>
         </div>
 
@@ -168,11 +161,11 @@
                                         <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">{{ $history->type }}</span>
                                 @endswitch
                             </td>
-                            <td class="px-4 py-3 text-sm font-medium {{ $history->quantity > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $history->quantity > 0 ? '+' : '' }}{{ $history->quantity }}
+                            <td class="px-4 py-3 text-sm font-medium {{ $history->quantity_change > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $history->quantity_change > 0 ? '+' : '' }}{{ $history->quantity_change }}
                             </td>
                             <td class="px-4 py-3 text-sm text-gray-600">{{ $history->user->name ?? 'Hệ thống' }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-600">{{ $history->notes ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-600">{{ $history->note ?? '-' }}</td>
                         </tr>
                     @empty
                         <tr>
