@@ -11,7 +11,7 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 space-y-6">
             <h3 class="text-lg font-semibold border-b pb-3">Thông tin cơ bản</h3>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tên truyện <span class="text-red-500">*</span></label>
@@ -70,6 +70,7 @@
                         <option value="regular" {{ old('edition_type', $comic->edition_type) == 'regular' ? 'selected' : '' }}>Thường</option>
                         <option value="special" {{ old('edition_type', $comic->edition_type) == 'special' ? 'selected' : '' }}>Đặc biệt</option>
                         <option value="limited" {{ old('edition_type', $comic->edition_type) == 'limited' ? 'selected' : '' }}>Giới hạn</option>
+                        <option value="collectors" {{ old('edition_type', $comic->edition_type) == 'collectors' ? 'selected' : '' }}>Sưu tầm</option>
                     </select>
                 </div>
 
@@ -105,7 +106,7 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 space-y-6">
             <h3 class="text-lg font-semibold border-b pb-3">Giá & Tồn kho</h3>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Giá bán (VNĐ) <span class="text-red-500">*</span></label>
@@ -129,14 +130,14 @@
 
         <div class="bg-white rounded-lg shadow-md p-6 space-y-6">
             <h3 class="text-lg font-semibold border-b pb-3">Ảnh bìa</h3>
-            
+
             @if($comic->cover)
                 <div class="mb-4">
                     <p class="text-sm text-gray-600 mb-2">Ảnh hiện tại:</p>
                     <img src="{{ $comic->cover }}" alt="{{ $comic->title }}" class="w-32 h-auto rounded-lg shadow">
                 </div>
             @endif
-            
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Chọn ảnh mới (để trống nếu không đổi)</label>
                 <input type="file" name="cover" accept="image/*"

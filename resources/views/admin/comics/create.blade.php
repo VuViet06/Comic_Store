@@ -77,6 +77,7 @@
                         <option value="regular" {{ old('edition_type') == 'regular' ? 'selected' : '' }}>Thường</option>
                         <option value="special" {{ old('edition_type') == 'special' ? 'selected' : '' }}>Đặc biệt</option>
                         <option value="limited" {{ old('edition_type') == 'limited' ? 'selected' : '' }}>Giới hạn</option>
+                        <option value="collectors" {{ old('edition_type') == 'collectors' ? 'selected' : '' }}>Sưu tầm</option>
                     </select>
                 </div>
 

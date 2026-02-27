@@ -28,8 +28,25 @@ class ComicFactory extends Factory
             'slug' => Str::slug($title),
             'description' => fake()->paragraph(),
             'published_year' => fake()->year(),
-            'edition_type' => fake()->randomElement(['regular', 'limited', 'collector']),
-            'condition' => fake()->randomElement(['new', 'like_new', 'used', 'discontinued']),
+            'edition_type' => fake()->randomElement([
+                'regular',
+                'special',
+                'limited',
+                'collector',   // some old records still use this spelling
+                'collectors',  // newer UI value
+            ]),
+            'condition' => fake()->randomElement([
+                // values that have been seen throughout the application
+                'new',
+                'like_new',
+                'good',
+                'fair',
+                'used',
+                'discontinued',
+                'in_stock',
+                'coming_soon',
+                'out_of_stock',
+            ]),
             'series' => fake()->word(),
             'volume' => fake()->numberBetween(1, 20),
             'price' => fake()->randomFloat(2, 10, 100),
