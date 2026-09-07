@@ -16,11 +16,11 @@ class StoreVoucherRequest extends FormRequest
         return [
             'code' => 'required|string|max:50|unique:vouchers,code',
             'type' => 'required|in:percent,fixed',
-            'value' => 'required|numeric|min:0',
+            'value' => 'required|numeric|min:0' . ($this->type === 'percent' ? '|max:100' : ''),
             'max_discount' => 'nullable|numeric|min:0|required_if:type,percent',
             'min_order_amount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
-            'starts_at' => 'nullable|date',
+            'starts_at' => 'nullable|date|after_or_equal:today',
             'ends_at' => 'nullable|date|after:starts_at',
             'is_active' => 'boolean',
         ];

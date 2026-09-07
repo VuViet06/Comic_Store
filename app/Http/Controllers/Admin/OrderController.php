@@ -72,7 +72,7 @@ class OrderController extends Controller
                 break;
         }
 
-        $orders = $query->paginate(20);
+        $orders = $query->paginate(6);
 
         return view('admin.orders.index', compact('orders'));
     }

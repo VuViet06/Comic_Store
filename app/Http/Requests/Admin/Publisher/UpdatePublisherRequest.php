@@ -17,6 +17,7 @@ class UpdatePublisherRequest extends FormRequest
         
         return [
             'name' => 'required|string|max:255|unique:publishers,name,' . $id,
+            'slug' => 'nullable|string|max:255|unique:publishers,slug,' . $id,
             'country' => 'nullable|string|max:255',
         ];
     }

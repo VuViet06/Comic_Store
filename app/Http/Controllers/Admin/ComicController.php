@@ -80,7 +80,7 @@ class ComicController extends Controller
                 break;
         }
 
-        $comics = $query->paginate(20);
+        $comics = $query->paginate(6);
         $categories = Category::all();
         $publishers = Publisher::all();
 
@@ -97,7 +97,7 @@ class ComicController extends Controller
     public function store(StoreComicRequest $request)
     {
         $validated = $request->validated();
-        $validated['slug'] = Str::slug($validated['title']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
 
         //image upload
         if ($request->hasFile('cover')) {
@@ -154,7 +154,7 @@ class ComicController extends Controller
         $comic = Comic::findOrFail($id);
         $validated = $request->validated();
 
-        if ($comic->title !== $validated['title']) {
+        if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
         }
         //  image upload Base64

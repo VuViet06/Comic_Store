@@ -18,7 +18,6 @@ class Comic extends Model
         'author',
         'published_year',
         'edition_type',
-        'condition',
         'series',
         'volume',
         'price',

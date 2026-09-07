@@ -17,6 +17,7 @@ class UpdateCategoryRequest extends FormRequest
         
         return [
             'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            'slug' => 'nullable|string|max:255|unique:categories,slug,' . $id,
         ];
     }
 

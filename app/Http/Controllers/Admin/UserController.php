@@ -42,7 +42,7 @@ class UserController extends Controller
                 break;
         }
 
-        $users = $query->paginate(20);
+        $users = $query->paginate(6);
 
         return view('admin.users.index', compact('users'));
     }

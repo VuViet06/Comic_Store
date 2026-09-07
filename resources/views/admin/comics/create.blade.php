@@ -29,6 +29,17 @@
                     @enderror
                 </div>
 
+
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tác giả <span class="text-red-500">*</span></label>
+                    <input type="text" name="author" value="{{ old('author') }}" required
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('author') border-red-500 @enderror">
+                    @error('author')
+                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Danh mục <span class="text-red-500">*</span></label>
                     <select name="category_id" required
@@ -81,15 +92,7 @@
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tình trạng <span class="text-red-500">*</span></label>
-                    <select name="condition" required
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="in_stock" {{ old('condition') == 'in_stock' ? 'selected' : '' }}>Còn hàng</option>
-                        <option value="coming_soon" {{ old('condition') == 'coming_soon' ? 'selected' : '' }}>Sắp có hàng</option>
-                        <option value="out_of_stock" {{ old('condition') == 'out_of_stock' ? 'selected' : '' }}>Hết hàng</option>
-                    </select>
-                </div>
+
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Bộ truyện</label>

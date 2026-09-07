@@ -111,7 +111,7 @@ class ShippingController extends Controller
             });
         }
 
-        $shipments = $query->orderBy('created_at', 'desc')->paginate(20);
+        $shipments = $query->orderBy('created_at', 'desc')->paginate(6);
         $partners = ShippingPartner::all();
 
         return view('admin.shipping.shipments', compact('shipments', 'partners'));

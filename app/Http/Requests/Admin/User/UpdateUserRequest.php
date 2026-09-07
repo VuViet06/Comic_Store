@@ -20,7 +20,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'role' => 'required|in:' . User::ROLE_ADMIN . ',' . User::ROLE_USER,
-            'phone' => 'nullable|string|max:20',
+            'phone' => ['nullable', 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10', 'max:20'],
             'password' => 'nullable|string|min:8|confirmed',
         ];
     }
@@ -32,6 +32,8 @@ class UpdateUserRequest extends FormRequest
             'email.required' => 'Vui lòng nhập email.',
             'email.unique' => 'Email này đã được sử dụng.',
             'role.required' => 'Vui lòng chọn vai trò.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.',
+            'phone.min' => 'Số điện thoại phải có ít nhất 10 số.',
         ];
     }
 }

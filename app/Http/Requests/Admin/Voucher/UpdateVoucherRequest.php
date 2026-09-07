@@ -18,7 +18,7 @@ class UpdateVoucherRequest extends FormRequest
         return [
             'code' => 'required|string|max:50|unique:vouchers,code,' . $id,
             'type' => 'required|in:percent,fixed',
-            'value' => 'required|numeric|min:0',
+            'value' => 'required|numeric|min:0' . ($this->type === 'percent' ? '|max:100' : ''),
             'max_discount' => 'nullable|numeric|min:0|required_if:type,percent',
             'min_order_amount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',

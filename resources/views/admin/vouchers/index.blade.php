@@ -5,8 +5,37 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex justify-end">
-        <a href="{{ route('admin.vouchers.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+    <div class="flex xl:flex-row flex-col justify-between items-start xl:items-center gap-4">
+        <!-- Status Filter Tabs -->
+        <div class="flex flex-wrap border-b border-gray-200 w-full xl:w-auto">
+            @php $currentStatus = $status ?? 'all'; @endphp
+            <a href="{{ route('admin.vouchers.index', ['status' => 'all'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Tất cả
+            </a>
+            <a href="{{ route('admin.vouchers.index', ['status' => 'active'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'active' ? 'border-green-600 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Hoạt động
+            </a>
+            <a href="{{ route('admin.vouchers.index', ['status' => 'upcoming'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'upcoming' ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Sắp diễn ra
+            </a>
+            <a href="{{ route('admin.vouchers.index', ['status' => 'expired'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'expired' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Hết hạn
+            </a>
+            <a href="{{ route('admin.vouchers.index', ['status' => 'out_of_limit'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'out_of_limit' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Hết lượt
+            </a>
+            <a href="{{ route('admin.vouchers.index', ['status' => 'hidden'] + request()->except('status', 'page')) }}" 
+               class="px-4 py-2 text-sm font-medium border-b-2 {{ $currentStatus === 'hidden' ? 'border-gray-600 text-gray-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                Tắt kích hoạt
+            </a>
+        </div>
+
+        <a href="{{ route('admin.vouchers.create') }}" class="inline-flex shrink-0 items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -52,18 +81,30 @@
                                 {{ $voucher->used_count ?? 0 }} / {{ $voucher->usage_limit ?? '∞' }}
                             </td>
                             <td class="px-6 py-4 text-sm">
-                                @if($voucher->expires_at)
-                                    {{ \Carbon\Carbon::parse($voucher->expires_at)->format('d/m/Y') }}
+                                @if($voucher->ends_at)
+                                    {{ \Carbon\Carbon::parse($voucher->ends_at)->format('d/m/Y') }}
                                 @else
                                     Không giới hạn
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($voucher->is_active)
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Hoạt động</span>
-                                @else
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">Ẩn</span>
-                                @endif
+                                <form action="{{ route('admin.vouchers.toggle-status', $voucher->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="hover:opacity-80 transition-opacity focus:outline-none" title="Nhấn để Bật/Tắt mã giảm giá">
+                                        @if(!$voucher->is_active)
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">Tắt kích hoạt</span>
+                                        @elseif($voucher->usage_limit !== null && $voucher->used_count >= $voucher->usage_limit)
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Hết lượt</span>
+                                        @elseif($voucher->ends_at && now()->isAfter($voucher->ends_at))
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Hết hạn</span>
+                                        @elseif($voucher->starts_at && now()->isBefore($voucher->starts_at))
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Sắp diễn ra</span>
+                                        @else
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Hoạt động</span>
+                                        @endif
+                                    </button>
+                                </form>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">

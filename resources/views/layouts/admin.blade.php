@@ -16,9 +16,9 @@
         @stack('scripts')
     </head>
     <body class="font-sans antialiased bg-gray-100">
-        <div class="min-h-screen flex">
-            <aside class="w-64 bg-gray-800 text-white min-h-screen">
-                <div class="p-4">
+        <div class="h-screen flex overflow-hidden">
+            <aside class="w-64 bg-gray-800 text-white flex flex-col shrink-0">
+                <div class="p-4 flex-1 overflow-y-auto">
                     <h1 class="text-xl font-bold mb-6">Quản Trị</h1>
                     <nav class="space-y-2">
                         <a href="{{ route('admindashboard') }}"
@@ -61,7 +61,7 @@
                     </nav>
                 </div>
 
-                <div class="absolute bottom-0 w-64 p-4 border-t border-gray-700">
+                <div class="p-4 border-t border-gray-700 mt-auto bg-gray-800 shrink-0">
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-sm">{{ Auth::user()->name }}</span>
                         <form method="POST" action="{{ route('admin.logout') }}">
@@ -75,13 +75,14 @@
                 </div>
             </aside>
 
-            <main class="flex-1">
-                <header class="bg-white shadow-sm border-b">
+            <main class="flex-1 min-w-0 flex flex-col overflow-hidden">
+                <header class="bg-white shadow-sm border-b shrink-0">
                     <div class="px-6 py-4">
-                        <h2 class="text-2xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800 truncate">@yield('page-title', 'Dashboard')</h2>
                     </div>
                 </header>
 
+                <div class="flex-1 overflow-y-auto overflow-x-hidden">
                 @if(session('success'))
                     <div class="mx-6 mt-4">
                         <div class="alert alert-success">{{ session('success') }}</div>
@@ -108,6 +109,7 @@
 
                 <div class="p-6">
                     @yield('content')
+                </div>
                 </div>
             </main>
         </div>

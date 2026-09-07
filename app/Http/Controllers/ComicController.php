@@ -23,12 +23,31 @@ class ComicController extends Controller
             $query->where('publisher_id', $request->publisher);
         }
 
-        if ($request->filled('condition')) {
-            $query->where('condition', $request->condition);
-        }
-
         if ($request->filled('edition_type')) {
             $query->where('edition_type', $request->edition_type);
+        }
+
+        if ($request->filled('price')) {
+            $range = $request->input('price');
+            $query->where(function ($q) use ($range) {
+                switch ($range) {
+                    case '0-150000':
+                        $q->whereBetween('price', [0, 150000]);
+                        break;
+                    case '150000-300000':
+                        $q->whereBetween('price', [150000, 300000]);
+                        break;
+                    case '300000-500000':
+                        $q->whereBetween('price', [300000, 500000]);
+                        break;
+                    case '500000-700000':
+                        $q->whereBetween('price', [500000, 700000]);
+                        break;
+                    case '700000+':
+                        $q->where('price', '>=', 700000);
+                        break;
+                }
+            });
         }
 
         if ($request->filled('in_stock')) {
@@ -67,9 +86,13 @@ class ComicController extends Controller
                 break;
         }
 
-        $comics = $query->paginate(12);
+        $comics = $query->paginate(24);
         $categories = Category::all();
         $publishers = Publisher::all();
+
+        if ($request->ajax()) {
+            return view('comics._list', compact('comics', 'categories', 'publishers'))->render();
+        }
 
         return view('comics.index', compact('comics', 'categories', 'publishers'));
     }

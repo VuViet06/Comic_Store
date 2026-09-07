@@ -15,6 +15,7 @@ class StorePublisherRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:publishers,name',
+            'slug' => 'nullable|string|max:255|unique:publishers,slug',
             'country' => 'nullable|string|max:255',
         ];
     }

@@ -15,8 +15,39 @@ class VoucherController extends Controller
     {
         $query = Voucher::query();
 
-        if ($request->filled('is_active')) {
-            $query->where('is_active', $request->is_active);
+        $status = $request->get('status', 'all');
+
+        switch ($status) {
+            case 'hidden':
+                $query->where('is_active', false);
+                break;
+            case 'out_of_limit':
+                $query->where('is_active', true)
+                      ->whereNotNull('usage_limit')
+                      ->whereColumn('used_count', '>=', 'usage_limit');
+                break;
+            case 'expired':
+                $query->where('is_active', true)
+                      ->whereNotNull('ends_at')
+                      ->where('ends_at', '<', now());
+                break;
+            case 'upcoming':
+                $query->where('is_active', true)
+                      ->whereNotNull('starts_at')
+                      ->where('starts_at', '>', now());
+                break;
+            case 'active':
+                $query->where('is_active', true)
+                      ->where(function($q) {
+                          $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+                      })
+                      ->where(function($q) {
+                          $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+                      })
+                      ->where(function($q) {
+                          $q->whereNull('usage_limit')->orWhereColumn('used_count', '<', 'usage_limit');
+                      });
+                break;
         }
 
         if ($request->filled('search')) {
@@ -26,9 +57,9 @@ class VoucherController extends Controller
             });
         }
 
-        $vouchers = $query->orderBy('created_at', 'desc')->paginate(20);
+        $vouchers = $query->orderBy('created_at', 'desc')->paginate(6);
 
-        return view('admin.vouchers.index', compact('vouchers'));
+        return view('admin.vouchers.index', compact('vouchers', 'status'));
     }
 
     public function create()
@@ -83,5 +114,15 @@ class VoucherController extends Controller
 
         return redirect()->route('admin.vouchers.index')
             ->with('success', 'Đã xóa mã giảm giá thành công.');
+    }
+
+    public function toggleStatus($id)
+    {
+        $voucher = Voucher::findOrFail($id);
+        $voucher->is_active = !$voucher->is_active;
+        $voucher->save();
+
+        return redirect()->back()
+            ->with('success', 'Đã thay đổi trạng thái mã giảm giá thành công.');
     }
 }

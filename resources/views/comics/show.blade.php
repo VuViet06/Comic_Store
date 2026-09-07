@@ -47,10 +47,7 @@
                     <span class="text-gray-600 w-32">Phiên bản:</span>
                     <span class="font-medium">{{ $comic->edition_type }}</span>
                 </div>
-                <div class="flex items-center">
-                    <span class="text-gray-600 w-32">Tình trạng:</span>
-                    <span class="font-medium">{{ $comic->condition }}</span>
-                </div>
+
                 @if($comic->series)
                     <div class="flex items-center">
                         <span class="text-gray-600 w-32">Bộ truyện:</span>

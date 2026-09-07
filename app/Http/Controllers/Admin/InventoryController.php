@@ -54,7 +54,7 @@ class InventoryController extends Controller
                 break;
         }
 
-        $comics = $query->paginate(20);
+        $comics = $query->paginate(6);
 
         return view('admin.inventory.index', compact('comics'));
     }
@@ -139,7 +139,7 @@ class InventoryController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $transactions = $query->orderBy('created_at', 'desc')->paginate(50);
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(6);
 
         $comic = $id ? Comic::findOrFail($id) : null;
 

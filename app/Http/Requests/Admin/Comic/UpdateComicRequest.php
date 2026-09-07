@@ -13,14 +13,16 @@ class UpdateComicRequest extends FormRequest
 
     public function rules(): array
     {
+        $comicId = $this->route('comic');
         return [
             'category_id' => 'required|exists:categories,id',
             'publisher_id' => 'required|exists:publishers,id',
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:comics,title,' . $comicId,
+            'slug' => 'nullable|string|max:255|unique:comics,slug,' . $comicId,
+            'author' => 'required|string|max:255',
             'description' => 'nullable|string',
             'published_year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'edition_type' => 'required|string|in:regular,special,limited,collectors',
-            'condition' => 'required|string|in:new,like_new,good,fair,in_stock,coming_soon,out_of_stock,used,discontinued',
             'series' => 'nullable|string|max:255',
             'volume' => 'nullable|integer|min:1',
             'price' => 'required|numeric|min:0',

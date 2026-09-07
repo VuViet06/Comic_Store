@@ -61,17 +61,7 @@
                                     @endswitch
                                 </span>
                             </div>
-                            <div>
-                                <span class="text-gray-500">Tình trạng:</span>
-                                <span class="font-medium">
-                                    @switch($comic->condition)
-                                        @case('in_stock') Còn hàng @break
-                                        @case('coming_soon') Sắp có hàng @break
-                                        @case('out_of_stock') Hết hàng @break
-                                        @default {{ $comic->condition }}
-                                    @endswitch
-                                </span>
-                            </div>
+
                             <div>
                                 <span class="text-gray-500">Trạng thái:</span>
                                 @if($comic->is_active)

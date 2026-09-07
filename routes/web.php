@@ -93,6 +93,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::resource('publishers', \App\Http\Controllers\Admin\PublisherController::class);
 
+    Route::patch('/vouchers/{voucher}/toggle-status', [\App\Http\Controllers\Admin\VoucherController::class, 'toggleStatus'])->name('vouchers.toggle-status');
     Route::resource('vouchers', \App\Http\Controllers\Admin\VoucherController::class);
 
     Route::get('/inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory.index');

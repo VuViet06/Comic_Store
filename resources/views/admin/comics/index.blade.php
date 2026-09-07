@@ -64,57 +64,57 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Truyện</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NXB</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tồn kho</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider">Truyện</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider">NXB</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Giá</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Tồn kho</th>
+                        <th class="px-3 py-3 text-left text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Trạng thái</th>
+                        <th class="px-3 py-3 text-right text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($comics as $comic)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-3 w-[250px] min-w-[200px]">
                                 <div class="flex items-center">
                                     @if($comic->cover)
-                                        <img src="{{ $comic->cover }}" alt="{{ $comic->title }}" class="w-12 h-16 object-cover rounded mr-4">
+                                        <img src="{{ $comic->cover }}" alt="{{ $comic->title }}" class="w-10 h-14 object-cover rounded mr-3 shrink-0">
                                     @else
-                                        <div class="w-12 h-16 bg-gray-200 rounded mr-4 flex items-center justify-center">
-                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-10 h-14 bg-gray-200 rounded mr-3 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
                                         </div>
                                     @endif
-                                    <div>
-                                        <div class="font-medium text-gray-900">{{ $comic->title }}</div>
+                                    <div class="max-w-[200px]">
+                                        <div class="font-medium text-sm text-gray-900 leading-tight mb-1">{{ $comic->title }}</div>
                                         @if($comic->series)
-                                            <div class="text-sm text-gray-500">{{ $comic->series }} - Tập {{ $comic->volume }}</div>
+                                            <div class="text-[11px] text-gray-500 leading-tight">{{ $comic->series }} - T.{{ $comic->volume }}</div>
                                         @endif
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">{{ $comic->category->name ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-500">{{ $comic->publisher->name ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ number_format($comic->price) }} VNĐ</td>
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-3 text-sm text-gray-500 leading-tight max-w-[120px]">{{ $comic->category->name ?? 'N/A' }}</td>
+                            <td class="px-3 py-3 text-sm text-gray-500 leading-tight max-w-[120px]">{{ $comic->publisher->name ?? 'N/A' }}</td>
+                            <td class="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{{ number_format($comic->price) }}đ</td>
+                            <td class="px-3 py-3 whitespace-nowrap">
                                 @if($comic->stock == 0)
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Hết hàng</span>
+                                    <span class="px-2 py-1 text-[11px] font-medium rounded-full bg-red-100 text-red-800">Hết</span>
                                 @elseif($comic->stock <= 10)
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">{{ $comic->stock }}</span>
+                                    <span class="px-2 py-1 text-[11px] font-medium rounded-full bg-yellow-100 text-yellow-800">{{ $comic->stock }}</span>
                                 @else
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{{ $comic->stock }}</span>
+                                    <span class="px-2 py-1 text-[11px] font-medium rounded-full bg-green-100 text-green-800">{{ $comic->stock }}</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-3 whitespace-nowrap flex items-center h-full min-h-[64px]">
                                 @if($comic->is_active)
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Đang bán</span>
+                                    <span class="px-2 py-1 text-[11px] whitespace-nowrap font-medium rounded-full bg-green-100 text-green-800 break-keep inline-block">Đang bán</span>
                                 @else
-                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">Ẩn</span>
+                                    <span class="px-2 py-1 text-[11px] whitespace-nowrap font-medium rounded-full bg-gray-100 text-gray-800 break-keep inline-block">Ẩn</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-right text-sm font-medium">
+                            <td class="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.comics.show', $comic->id) }}" class="text-blue-600 hover:text-blue-900" title="Xem">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
